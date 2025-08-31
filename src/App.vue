@@ -12,16 +12,16 @@ function handleClick() {
 </script>
 
 <template>
-  <nav>
+  <nav class="hidden md:flex mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
     <ul class="flex flex-row">
-    <li><router-link :to="{name:'Home'}"> Головна </router-link></li>
-    <li><router-link :to="{name:'Map'}"> Карта </router-link></li>
+    <li><router-link class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold hover:bg-white/5" :to="{name:'Home'}"> Головна </router-link></li>
+    <li><router-link class="block rounded-lg py-2 pr-3 pl-6 text-sm/7 font-semibold hover:bg-white/5" :to="{name:'Map'}"> Карта </router-link></li>
     </ul>
  </nav>
   <!-- Include this script tag or install `@tailwindplus/elements` via npm: -->
   <!-- <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script> -->
-  <div class="relative">
-    <button popovertarget="desktop-menu-solutions" class="inline-flex items-center gap-x-1 text-sm/6 font-semibold">
+  <div class="relative md:hidden">
+    <button popovertarget="desktop-menu-solutions" class="inline-flex items-center gap-x-1 text-sm/6 font-semibold p-4">
       <Bars3Icon class="w-6 h-6 "/>
     </button>
 
