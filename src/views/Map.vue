@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
-import ItemsList from '@/components/ItemsList.vue'
+import {useItemsStore} from '@/stores/items'
 import { ref, onMounted } from 'vue'
 import maplibregl from 'maplibre-gl'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const store = useItemsStore()
 
 const mapContainer = ref<HTMLDivElement | null>(null)
 let map: maplibregl.Map
@@ -38,24 +42,90 @@ onMounted(() => {
 
     map.addControl(new maplibregl.NavigationControl())
 
-    const popup = new maplibregl.Popup({offset: 25}).setHTML(
-        '<div class="mx-auto flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">\n' +
-        '  <svg class="size-12 shrink-0" viewBox="0 0 40 40"><defs><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="a"><stop stop-color="#2397B3" offset="0%"></stop><stop stop-color="#13577E" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="b"><stop stop-color="#73DFF2" offset="0%"></stop><stop stop-color="#47B1EB" offset="100%"></stop></linearGradient></defs><g fill="none" fill-rule="evenodd"><path d="M28.872 22.096c.084.622.128 1.258.128 1.904 0 7.732-6.268 14-14 14-2.176 0-4.236-.496-6.073-1.382l-6.022 2.007c-1.564.521-3.051-.966-2.53-2.53l2.007-6.022A13.944 13.944 0 0 1 1 24c0-7.331 5.635-13.346 12.81-13.95A9.967 9.967 0 0 0 13 14c0 5.523 4.477 10 10 10a9.955 9.955 0 0 0 5.872-1.904z" fill="url(#a)" transform="translate(1 1)"></path><path d="M35.618 20.073l2.007 6.022c.521 1.564-.966 3.051-2.53 2.53l-6.022-2.007A13.944 13.944 0 0 1 23 28c-7.732 0-14-6.268-14-14S15.268 0 23 0s14 6.268 14 14c0 2.176-.496 4.236-1.382 6.073z" fill="url(#b)" transform="translate(1 1)"></path><path d="M18 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM24 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM30 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="#FFF"></path></g></svg>\n' +
-        '  <div>\n' +
-        '    <div class="text-xl font-medium text-black dark:text-white">ChitChat</div>\n' +
-        '    <p class="text-gray-500 dark:text-gray-400">You have a new message!</p>\n' +
-        '  </div>\n' +
-        '</div>'
-    );
 
-    // create DOM element for the marker
-    const el = document.createElement('div');
-    el.id = 'marker';
 
-    const marker = new maplibregl.Marker()
-        .setLngLat([30.5238, 50.4547])
-        .setPopup(popup)
-        .addTo(map);
+    map.on('load', async () => {
+      const image = await map.loadImage('https://maplibre.org/maplibre-gl-js/docs/assets/custom_marker.png');
+      map.addImage('custom-marker', image.data);
+
+      map.addSource('places', {
+        'type': 'geojson',
+        'data': {
+          'type': 'FeatureCollection',
+          'features': store.$state.items.map(i => ({
+            type: 'Feature',
+            geometry: i.geometry,
+            properties: {
+              id: i.id,
+              name: i.name,
+              description: `<div class="mx-auto flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+              <svg class="size-12 shrink-0" viewBox="0 0 40 40"><defs><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="a"><stop stop-color="#2397B3" offset="0%"></stop><stop stop-color="#13577E" offset="100%"></stop></linearGradient><linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="b"><stop stop-color="#73DFF2" offset="0%"></stop><stop stop-color="#47B1EB" offset="100%"></stop></linearGradient></defs><g fill="none" fill-rule="evenodd"><path d="M28.872 22.096c.084.622.128 1.258.128 1.904 0 7.732-6.268 14-14 14-2.176 0-4.236-.496-6.073-1.382l-6.022 2.007c-1.564.521-3.051-.966-2.53-2.53l2.007-6.022A13.944 13.944 0 0 1 1 24c0-7.331 5.635-13.346 12.81-13.95A9.967 9.967 0 0 0 13 14c0 5.523 4.477 10 10 10a9.955 9.955 0 0 0 5.872-1.904z" fill="url(#a)" transform="translate(1 1)"></path><path d="M35.618 20.073l2.007 6.022c.521 1.564-.966 3.051-2.53 2.53l-6.022-2.007A13.944 13.944 0 0 1 23 28c-7.732 0-14-6.268-14-14S15.268 0 23 0s14 6.268 14 14c0 2.176-.496 4.236-1.382 6.073z" fill="url(#b)" transform="translate(1 1)"></path><path d="M18 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM24 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM30 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="#FFF"></path></g></svg>
+              <div>
+                  <div class="text-xl font-medium text-black dark:text-white">${i.name}<br/>₴${i.price}<br/>${i.location}</div>
+                  <p class="text-gray-500 dark:text-gray-400">${i.description}</p>
+                  </div>
+                  </div>`,
+              price: i.price,
+              location: i.location
+            }
+          }))
+        }
+      });
+      map.addLayer({
+        'id': 'places',
+        'type': 'symbol',
+        'source': 'places',
+        'layout': {
+          'icon-image': 'custom-marker',
+          'icon-overlap': 'always'
+        }
+      });
+
+      const popup = new maplibregl.Popup({
+        closeButton: false,
+        closeOnClick: false
+      });
+
+      // Make sure to detect marker change for overlapping markers
+      // and use mousemove instead of mouseenter event
+      let currentFeatureCoordinates = undefined;
+      map.on('mousemove', 'places', (e) => {
+        const featureCoordinates = e.features[0].geometry.coordinates.toString();
+        if (currentFeatureCoordinates !== featureCoordinates) {
+          currentFeatureCoordinates = featureCoordinates;
+
+          // Change the cursor style as a UI indicator.
+          map.getCanvas().style.cursor = 'pointer';
+
+          const coordinates = e.features[0].geometry.coordinates.slice();
+          const description = e.features[0].properties.description;
+
+          // Ensure that if the map is zoomed out such that multiple
+          // copies of the feature are visible, the popup appears
+          // over the copy being pointed to.
+          while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+          }
+
+          // Populate the popup and set its coordinates
+          // based on the feature found.
+          popup.setLngLat(coordinates).setHTML(description).addTo(map);
+        }
+      });
+
+      map.on('mouseleave', 'places', () => {
+        currentFeatureCoordinates = undefined;
+        map.getCanvas().style.cursor = '';
+        popup.remove();
+      });
+    });
+
+    map.on('click', 'places', (e) => {
+      const id = e.features?.[0]?.properties?.id
+      if (id) {
+        router.push(`/items/${id}`)
+      }
+    })
   }
 })
 </script>
