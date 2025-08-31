@@ -3,9 +3,14 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import * as HeroIcons from '@heroicons/vue/24/solid'
 import './assets/main.css'
 
 const app = createApp(App)
+
+for (const [key, component] of Object.entries(HeroIcons)) {
+    app.component(key, component)
+}
 
 app.use(createPinia())
 app.use(router)
