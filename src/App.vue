@@ -9,6 +9,7 @@ function handleClick() {
   router.push({ name: props.to })
 }
 
+
 </script>
 
 <template>

@@ -29,7 +29,10 @@ export const useItemsStore = defineStore('items', {
     byId: (state) => (id: string) => state.items.find(i => i.id === id),
     byLocation: (state) => (loc: string) =>
       state.items.filter(i => i.location.toLowerCase() === loc.toLowerCase()),
-    totalPrice: (state) => state.items.reduce((s, i) => s + i.price, 0)
+    totalPrice: (state) => state.items.reduce((s, i) => s + i.price, 0),
+    byHotel: (state) => (query: string) => {
+        state.items.filter(i => i.name.toLowerCase().includes(query.toLowerCase()))
+    }
   },
 
   actions: {
@@ -46,6 +49,6 @@ export const useItemsStore = defineStore('items', {
     },
     remove(id: string) {
       this.items = this.items.filter(i => i.id !== id)
-    }
+    },
   }
 })
