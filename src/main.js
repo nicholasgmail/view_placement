@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import * as HeroIcons from '@heroicons/vue/24/solid'
 import './assets/main.css'
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 const app = createApp(App)
 
