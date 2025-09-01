@@ -9,7 +9,6 @@ function handleClick() {
   router.push({ name: props.to })
 }
 
-
 </script>
 
 <template>
@@ -25,7 +24,6 @@ function handleClick() {
     <button popovertarget="desktop-menu-solutions" class="inline-flex items-center gap-x-1 text-sm/6 font-semibold p-4">
       <Bars3Icon class="w-6 h-6 "/>
     </button>
-
     <el-popover id="desktop-menu-solutions" anchor="bottom" popover class="w-screen max-w-max overflow-visible bg-transparent px-0 transition transition-discrete [--anchor-gap:--spacing(5)] backdrop:bg-transparent open:flex data-closed:translate-y-1 data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in">
       <div class="w-screen h-screen max-w-md flex-auto overflow-hidden bg-gray-800 text-sm/6 outline-1 -outline-offset-1 outline-white/10">
         <div class="relative p-4">
@@ -50,12 +48,9 @@ function handleClick() {
               <router-link :to="{name:'Map'}" class="text-white"> Карта </router-link>
             </div>
           </div>
-
         </div>
       </div>
     </el-popover>
   </div>
-
   <router-view/>
-
 </template>

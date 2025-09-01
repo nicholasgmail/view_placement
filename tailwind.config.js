@@ -3,10 +3,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
-
-
-console.log(defaultTheme.spacing)
-
 export default {
   content: [
     "./index.html",
